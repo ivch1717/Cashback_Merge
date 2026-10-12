@@ -54,4 +54,17 @@ public class GameSession {
     public String boardAsString() {
         return state.toString();
     }
+
+    public GameState getState() {
+        return state;
+    }
+
+    public String applyMove(Move move) {
+        if (!state.applyMove(move)) {
+            throw new IllegalArgumentException("Некорректный ход, ничего не сдвинулось");
+        }
+        nextStep();
+        state.moves();
+        return boardAsString();
+    }
 }

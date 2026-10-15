@@ -11,6 +11,7 @@ public class GameState {
     private int movesUsed;
     private int movesLimit;
     private int boardSize;
+    private int score;
 
     public GameState(int boardSize, int movesLimit) {
         if (movesLimit <= 0) {
@@ -98,5 +99,90 @@ public class GameState {
                 .append(String.join("┴", Collections.nCopies(board[0].length, horizontal)))
                 .append('┘');
         return result.toString();
+    }
+
+    private int[] mergeLine(int[] line) {
+        int l = 0;
+        int i = 0;
+        while (i < line.length) {
+            if (l == i) {
+                i++;
+                continue;
+            }
+            if (line[i] != 0) {
+                if (line[l] == 0) {
+                    line[l] = line[i];
+                    line[i] = 0;
+                } else if (line[l] == line[i]) {
+                    line[l] += line[i];
+                    line[i] = 0;
+                    score += line[l];
+                    l++;
+                } else {
+                    l++;
+                    continue;
+                }
+            }
+            i++;
+        }
+        return line;
+    }
+
+    private int[] getLine(Move move, int i) {
+        int[] oldList = new int[BOARD_SIZE];
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            oldList[j] = switch (move) {
+                case LEFT -> board[i][j];
+                case RIGHT -> board[i][BOARD_SIZE - 1 - j];
+                case UP -> board[j][i];
+                case DOWN -> board[BOARD_SIZE - 1 - j][i];
+            };
+        }
+        return oldList;
+    }
+
+    public boolean applyMove(Move move) {
+        if (movesUsed >= movesLimit) {
+            throw new IllegalArgumentException("У вас больше нет ходов");
+        }
+        boolean isChange = false;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            int[] oldList = getLine(move, i);
+
+            int[] newList = mergeLine(oldList.clone());
+
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (newList[j] != oldList[j]) {
+                    isChange = true;
+                }
+                switch (move) {
+                    case LEFT -> board[i][j] = newList[j];
+                    case RIGHT -> board[i][BOARD_SIZE - 1 - j] = newList[j];
+                    case UP -> board[j][i] = newList[j];
+                    case DOWN -> board[BOARD_SIZE - 1 - j][i] = newList[j];
+                }
+            }
+        }
+
+        return isChange;
+    }
+
+    public void moves() {
+        if (movesUsed >= movesLimit) {
+            throw new IllegalArgumentException("У вас больше нет ходов");
+        }
+        movesUsed += 1;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getMovesUsed() {
+        return movesUsed;
+    }
+
+    public int getTileValue(Position position) {
+        return board[position.x()][position.y()];
     }
 }

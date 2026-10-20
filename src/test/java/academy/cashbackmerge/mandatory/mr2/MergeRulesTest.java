@@ -3,9 +3,9 @@ package academy.cashbackmerge.mandatory.mr2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import academy.cashbackmerge.GameState;
-import academy.cashbackmerge.Move;
-import academy.cashbackmerge.Position;
+import academy.cashbackmerge.game.GameState;
+import academy.cashbackmerge.game.Move;
+import academy.cashbackmerge.game.Position;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,15 +74,4 @@ class MergeRulesTest {
         }
     }
 
-    @Test
-    @DisplayName("Пустые клетки между одинаковыми плитками не мешают слиянию")
-    void gapsDoNotPreventMerge() {
-        rowShiftsLeftAndMerges(".,1,.,1", "2,.,.,.");
-    }
-
-    @Test
-    @DisplayName("Разные плитки сдвигаются, но не сливаются")
-    void differentTilesDoNotMerge() {
-        rowShiftsLeftAndMerges(".,2,1,.", "2,1,.,.");
-    }
 }

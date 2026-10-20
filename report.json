@@ -1,0 +1,21 @@
+{
+  "simulationStatus" : "FAILED",
+  "averageScore" : 406.6562,
+  "maxScore" : 586,
+  "maxRewardRate" : 0.9252000000,
+  "countPlayers" : 10000,
+  "movesLimit" : 100,
+  "seed" : 42,
+  "strategy" : "RANDOM",
+  "maxTileDistribution" : {
+    "8" : 42,
+    "16" : 706,
+    "32" : 4741,
+    "64" : 4511
+  },
+  "rewardDistribution" : {
+    "150" : 42,
+    "500" : 706,
+    "2000" : 9252
+  }
+}

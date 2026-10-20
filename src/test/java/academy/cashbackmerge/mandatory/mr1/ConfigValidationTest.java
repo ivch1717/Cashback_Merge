@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import academy.cashbackmerge.CampaignConfig;
 import academy.cashbackmerge.Load;
+import academy.cashbackmerge.RewardTier;
 import academy.cashbackmerge.SpawnRule;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -31,20 +32,25 @@ class ConfigValidationTest {
     void probabilitiesNotSummingToOneAreRejected() {
         List<SpawnRule> rules =
                 List.of(new SpawnRule(1, new BigDecimal("0.85")), new SpawnRule(2, new BigDecimal("0.10")));
-        assertThrows(IllegalArgumentException.class, () -> new CampaignConfig(4, 100, rules));
+        assertThrows(IllegalArgumentException.class, () -> createConfig(100, rules));
     }
 
     @Test
     @DisplayName("movesLimit <= 0 — конфиг отклоняется")
     void nonPositiveMovesLimitIsRejected() {
         List<SpawnRule> rules = List.of(new SpawnRule(1, BigDecimal.ONE));
-        assertThrows(IllegalArgumentException.class, () -> new CampaignConfig(4, 0, rules));
-        assertThrows(IllegalArgumentException.class, () -> new CampaignConfig(4, -1, rules));
+        assertThrows(IllegalArgumentException.class, () -> createConfig(0, rules));
+        assertThrows(IllegalArgumentException.class, () -> createConfig(-1, rules));
     }
 
     @Test
     @DisplayName("Пустой список spawn-правил — конфиг отклоняется")
     void emptySpawnRulesAreRejected() {
-        assertThrows(IllegalArgumentException.class, () -> new CampaignConfig(4, 100, List.of()));
+        assertThrows(IllegalArgumentException.class, () -> createConfig(100, List.of()));
+    }
+
+    private CampaignConfig createConfig(int movesLimit, List<SpawnRule> rules) {
+        return new CampaignConfig(
+                4, movesLimit, rules, List.of(new RewardTier(32, new BigDecimal("2000"))), 32, new BigDecimal("0.20"));
     }
 }

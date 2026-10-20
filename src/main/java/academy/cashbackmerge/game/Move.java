@@ -1,4 +1,4 @@
-package academy.cashbackmerge;
+package academy.cashbackmerge.game;
 
 public enum Move {
     UP,

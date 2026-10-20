@@ -1,4 +1,4 @@
-package academy.cashbackmerge;
+package academy.cashbackmerge.game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -141,6 +141,21 @@ public class GameState {
         return oldList;
     }
 
+    public boolean canMove(Move move) {
+        if (!hasMovesRemaining()) {
+            return false;
+        }
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            int[] line = getLine(move, i);
+            for (int j = 0; j < line.length - 1; j++) {
+                if (line[j + 1] != 0 && (line[j] == 0 || line[j] == line[j + 1])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean applyMove(Move move) {
         if (movesUsed >= movesLimit) {
             throw new IllegalArgumentException("У вас больше нет ходов");
@@ -180,6 +195,10 @@ public class GameState {
 
     public int getMovesUsed() {
         return movesUsed;
+    }
+
+    public boolean hasMovesRemaining(){
+        return movesUsed < movesLimit;
     }
 
     public int getTileValue(Position position) {

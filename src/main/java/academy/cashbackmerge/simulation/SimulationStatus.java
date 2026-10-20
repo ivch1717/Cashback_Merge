@@ -4,4 +4,3 @@ public enum SimulationStatus {
     OK,
     FAILED
 }
-

@@ -1,8 +1,9 @@
 package academy.cashbackmerge.game;
 
-import academy.cashbackmerge.*;
+import academy.cashbackmerge.config.CampaignConfig;
+import academy.cashbackmerge.config.RewardTier;
+import academy.cashbackmerge.config.SpawnRule;
 import academy.cashbackmerge.simulation.ResponseSession;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ public class GameSession {
     private final Random random;
     private final GameState state;
     private final List<RewardTier> rewardTable;
-    private final BigDecimal maxRewardAllowedRate;
     private final int boardSize;
 
     public GameSession(CampaignConfig config, long seed) {
@@ -22,7 +22,6 @@ public class GameSession {
         rules = config.spawnRules();
         state = new GameState(config.boardSize(), config.movesLimit());
         rewardTable = config.rewardTable();
-        maxRewardAllowedRate = config.maxRewardAllowedRate();
         boardSize = config.boardSize();
     }
 
@@ -97,13 +96,13 @@ public class GameSession {
         return state.getTileValue(position);
     }
 
-    public String applyMove(Move move) {
+    public void applyMove(Move move) {
         if (!state.applyMove(move)) {
             throw new IllegalArgumentException("Некорректный ход, ничего не сдвинулось");
         }
         nextStep();
         state.moves();
-        return boardAsString();
+        boardAsString();
     }
 
     public ResponseSession getReward() {
@@ -126,8 +125,8 @@ public class GameSession {
         return new ResponseSession(maxCashback, reward, state.getScore(), maxField);
     }
 
-    public List<Move> getAvailableMoves(){
-        if (!state.hasMovesRemaining()){
+    public List<Move> getAvailableMoves() {
+        if (state.hasMovesRemaining()) {
             return new ArrayList<>();
         }
         List<Move> moves = new ArrayList<>();
@@ -137,5 +136,37 @@ public class GameSession {
             }
         }
         return moves;
+    }
+
+    public Move getMaxScoreMove(List<Move> moves) {
+        if (moves.isEmpty()) {
+            throw new IllegalArgumentException("Список ходов не должен быть пустым");
+        }
+        Move bestMove = moves.getFirst();
+        int bestScore = -1;
+        for (Move move : moves) {
+            if (!state.canMove(move)) {
+                continue;
+            }
+            GameState trial = new GameState(boardSize, 1);
+            for (int row = 0; row < boardSize; row++) {
+                for (int column = 0; column < boardSize; column++) {
+                    Position position = new Position(row, column);
+                    int value = state.getTileValue(position);
+                    if (value != 0) {
+                        trial.placeTitle(position, value);
+                    }
+                }
+            }
+            trial.applyMove(move);
+            if (trial.getScore() > bestScore) {
+                bestScore = trial.getScore();
+                bestMove = move;
+            }
+        }
+        if (bestScore < 0) {
+            throw new IllegalArgumentException("В списке нет доступных ходов");
+        }
+        return bestMove;
     }
 }

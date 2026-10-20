@@ -1,4 +1,4 @@
-package academy.cashbackmerge;
+package academy.cashbackmerge.config;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,11 +10,10 @@ public record CampaignConfig(
         List<RewardTier> rewardTable,
         int maxRewardCashback,
         BigDecimal maxRewardAllowedRate) {
-    private static final int BOARD_SIZE = 4;
 
     public CampaignConfig {
-        if (boardSize != BOARD_SIZE) {
-            throw new IllegalArgumentException("Размер поля должен быть 4 * 4");
+        if (boardSize <= 1) {
+            throw new IllegalArgumentException("Размер поля должен быть больше 1");
         }
         if (movesLimit <= 0) {
             throw new IllegalArgumentException("Количество ходов должно быть положительным");
@@ -46,11 +45,10 @@ public record CampaignConfig(
         }
 
         RewardTier maxTier = rewardTable.stream()
-            .filter(tier -> tier.cashback() == maxRewardCashback)
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException(
-                "Уровень максимальной награды отсутствует в таблице наград"));
-
+                .filter(tier -> tier.cashback() == maxRewardCashback)
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Уровень максимальной награды отсутствует в таблице наград"));
 
         spawnRules = List.copyOf(spawnRules);
         rewardTable = List.copyOf(rewardTable);

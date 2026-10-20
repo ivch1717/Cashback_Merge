@@ -1,29 +1,25 @@
 package academy.cashbackmerge.simulation;
 
-import academy.cashbackmerge.CampaignConfig;
-import academy.cashbackmerge.game.GameSession;
+import academy.cashbackmerge.config.CampaignConfig;
 import academy.cashbackmerge.game.Move;
-
 import java.util.List;
-import java.util.Random;
 
-public class RandomPlayer {
-    private final Random random;
-    private final GameSession session;
+public class RandomPlayer extends Player {
 
-    public RandomPlayer(CampaignConfig config, long seed){
-        random = new Random(seed);
-        session = new GameSession(config, seed);
-        session.startGame();
+    public RandomPlayer(CampaignConfig config, long seed) {
+        super(config, seed);
     }
 
-    public ResponseSession play(){
-        while (true){
-            List<Move> moves = session.getAvailableMoves();
-            if (moves.isEmpty()){
+    @Override
+    public ResponseSession play() {
+        while (true) {
+            List<Move> moves = super.session.getAvailableMoves();
+            if (moves.isEmpty()) {
                 return session.getReward();
             }
-            session.applyMove(moves.get(random.nextInt(moves.size())));
+            Move move = moves.get(random.nextInt(moves.size()));
+            session.applyMove(move);
+            super.moves.add(move);
         }
     }
 }

@@ -3,10 +3,10 @@ package academy.cashbackmerge.mandatory.mr3;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import academy.cashbackmerge.CampaignConfig;
 import academy.cashbackmerge.Load;
-import academy.cashbackmerge.RewardTier;
-import academy.cashbackmerge.SpawnRule;
+import academy.cashbackmerge.config.CampaignConfig;
+import academy.cashbackmerge.config.RewardTier;
+import academy.cashbackmerge.config.SpawnRule;
 import academy.cashbackmerge.game.GameSession;
 import academy.cashbackmerge.simulation.ResponseSession;
 import academy.cashbackmerge.simulation.SimulationStatus;
@@ -52,9 +52,8 @@ class RewardAndSimulationTest {
     @DisplayName("Weighted random учитывает вероятности из конфига")
     void spawnRespectsConfiguredProbabilities() {
         int samples = 5000;
-        CampaignConfig config = config(List.of(
-                new SpawnRule(1, new BigDecimal("0.85")),
-                new SpawnRule(2, new BigDecimal("0.15"))), "0.20");
+        CampaignConfig config = config(
+                List.of(new SpawnRule(1, new BigDecimal("0.85")), new SpawnRule(2, new BigDecimal("0.15"))), "0.20");
         Random seeds = new Random(42L);
         int ones = 0;
         for (int i = 0; i < samples; i++) {
@@ -68,9 +67,8 @@ class RewardAndSimulationTest {
         }
         assertTrue(ones >= 4100 && ones <= 4400, "Количество единиц: " + ones);
 
-        CampaignConfig onlyTwos = config(List.of(
-                new SpawnRule(1, BigDecimal.ZERO),
-                new SpawnRule(2, BigDecimal.ONE)), "0.20");
+        CampaignConfig onlyTwos =
+                config(List.of(new SpawnRule(1, BigDecimal.ZERO), new SpawnRule(2, BigDecimal.ONE)), "0.20");
         for (int i = 0; i < 100; i++) {
             GameSession session = new GameSession(onlyTwos, seeds.nextLong());
             session.nextStep();
@@ -105,42 +103,45 @@ class RewardAndSimulationTest {
 
     @Test
     @DisplayName("Отчёт содержит долю игроков с максимальной наградой")
-    void reportContainsMaxRewardRate() {
+    void reportContainsMaxRewardRate() throws IOException {
         SimulatorResponse report = mixedReport("0.50");
         assertEquals(0, new BigDecimal("0.3333333333").compareTo(report.maxRewardRate()));
 
-        SimulatorResponse noMaxReward = new Simulator(42L).simulate(
-                config(List.of(new SpawnRule(1, BigDecimal.ONE)), "0.20"), 20, Strategy.RANDOM);
+        SimulatorResponse noMaxReward = new Simulator(42L)
+                .simulate(config(List.of(new SpawnRule(1, BigDecimal.ONE)), "0.20"), 20, Strategy.RANDOM);
         assertEquals(0, noMaxReward.maxRewardRate().compareTo(BigDecimal.ZERO));
 
-        SimulatorResponse allMaxReward = new Simulator(42L).simulate(
-                config(List.of(new SpawnRule(4, BigDecimal.ONE)), "1"), 20, Strategy.RANDOM);
+        SimulatorResponse allMaxReward = new Simulator(42L)
+                .simulate(config(List.of(new SpawnRule(4, BigDecimal.ONE)), "1"), 20, Strategy.RANDOM);
         assertEquals(0, allMaxReward.maxRewardRate().compareTo(BigDecimal.ONE));
     }
 
     @Test
     @DisplayName("Статус OK, если actualMaxRewardRate <= maxRewardAllowedRate, иначе FAILED")
-    void reportStatusReflectsBusinessConstraint() {
+    void reportStatusReflectsBusinessConstraint() throws IOException {
         assertEquals(SimulationStatus.OK, mixedReport("0.50").simulationStatus());
         assertEquals(SimulationStatus.FAILED, mixedReport("0.20").simulationStatus());
 
-        SimulatorResponse atBoundary = new Simulator(42L).simulate(
-                config(List.of(new SpawnRule(4, BigDecimal.ONE)), "1"), 20, Strategy.RANDOM);
+        SimulatorResponse atBoundary = new Simulator(42L)
+                .simulate(config(List.of(new SpawnRule(4, BigDecimal.ONE)), "1"), 20, Strategy.RANDOM);
         assertEquals(SimulationStatus.OK, atBoundary.simulationStatus());
 
         assertEquals(SimulationStatus.FAILED, mixedReport("0.33333333332").simulationStatus());
     }
 
-    private SimulatorResponse mixedReport(String allowedRate) {
-        CampaignConfig config = config(List.of(
-                new SpawnRule(1, new BigDecimal("0.5")),
-                new SpawnRule(2, new BigDecimal("0.5"))), allowedRate);
+    private SimulatorResponse mixedReport(String allowedRate) throws IOException {
+        CampaignConfig config = config(
+                List.of(new SpawnRule(1, new BigDecimal("0.5")), new SpawnRule(2, new BigDecimal("0.5"))), allowedRate);
         return new Simulator(14L).simulate(config, 3, Strategy.RANDOM);
     }
 
     private CampaignConfig config(List<SpawnRule> rules, String allowedRate) {
-        return new CampaignConfig(4, 1, rules,
+        return new CampaignConfig(
+                4,
+                1,
+                rules,
                 List.of(new RewardTier(4, new BigDecimal("50")), new RewardTier(2, BigDecimal.ZERO)),
-                4, new BigDecimal(allowedRate));
+                4,
+                new BigDecimal(allowedRate));
     }
 }

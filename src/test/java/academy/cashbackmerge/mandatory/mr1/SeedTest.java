@@ -2,9 +2,9 @@ package academy.cashbackmerge.mandatory.mr1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import academy.cashbackmerge.CampaignConfig;
-import academy.cashbackmerge.game.GameSession;
 import academy.cashbackmerge.Load;
+import academy.cashbackmerge.config.CampaignConfig;
+import academy.cashbackmerge.game.GameSession;
 import academy.cashbackmerge.simulation.Simulator;
 import academy.cashbackmerge.simulation.SimulatorResponse;
 import academy.cashbackmerge.simulation.Strategy;

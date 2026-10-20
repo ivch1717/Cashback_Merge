@@ -1,5 +1,6 @@
 package academy.cashbackmerge.simulation;
 
 public enum Strategy {
-    RANDOM
+    RANDOM,
+    GREEDY_SCORE
 }

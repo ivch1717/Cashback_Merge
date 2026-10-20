@@ -5,12 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameState {
-    private static final int BOARD_SIZE = 4;
-
-    private int[][] board;
+    private final int[][] board;
     private int movesUsed;
-    private int movesLimit;
-    private int boardSize;
+    private final int movesLimit;
+    private final int boardSize;
     private int score;
 
     public GameState(int boardSize, int movesLimit) {
@@ -18,8 +16,8 @@ public class GameState {
             throw new IllegalArgumentException("Лимит ходов должен быть > 0");
         }
 
-        if (boardSize != BOARD_SIZE) {
-            throw new IllegalArgumentException("Размер поля должен быть 4");
+        if (boardSize <= 1) {
+            throw new IllegalArgumentException("Размер поля должен быть больше 1");
         }
 
         movesUsed = 0;
@@ -89,7 +87,7 @@ public class GameState {
             for (int value : board[row]) {
                 String cell = value == 0 ? "" : value + "%";
                 result.append(' ')
-                        .append(" ".repeat(cellWidth - cell.length()))
+                        .repeat(" ", cellWidth - cell.length())
                         .append(cell)
                         .append(" │");
             }
@@ -129,23 +127,23 @@ public class GameState {
     }
 
     private int[] getLine(Move move, int i) {
-        int[] oldList = new int[BOARD_SIZE];
-        for (int j = 0; j < BOARD_SIZE; j++) {
+        int[] oldList = new int[boardSize];
+        for (int j = 0; j < boardSize; j++) {
             oldList[j] = switch (move) {
                 case LEFT -> board[i][j];
-                case RIGHT -> board[i][BOARD_SIZE - 1 - j];
+                case RIGHT -> board[i][boardSize - 1 - j];
                 case UP -> board[j][i];
-                case DOWN -> board[BOARD_SIZE - 1 - j][i];
+                case DOWN -> board[boardSize - 1 - j][i];
             };
         }
         return oldList;
     }
 
     public boolean canMove(Move move) {
-        if (!hasMovesRemaining()) {
+        if (hasMovesRemaining()) {
             return false;
         }
-        for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int i = 0; i < boardSize; i++) {
             int[] line = getLine(move, i);
             for (int j = 0; j < line.length - 1; j++) {
                 if (line[j + 1] != 0 && (line[j] == 0 || line[j] == line[j + 1])) {
@@ -161,20 +159,20 @@ public class GameState {
             throw new IllegalArgumentException("У вас больше нет ходов");
         }
         boolean isChange = false;
-        for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int i = 0; i < boardSize; i++) {
             int[] oldList = getLine(move, i);
 
             int[] newList = mergeLine(oldList.clone());
 
-            for (int j = 0; j < BOARD_SIZE; j++) {
+            for (int j = 0; j < boardSize; j++) {
                 if (newList[j] != oldList[j]) {
                     isChange = true;
                 }
                 switch (move) {
                     case LEFT -> board[i][j] = newList[j];
-                    case RIGHT -> board[i][BOARD_SIZE - 1 - j] = newList[j];
+                    case RIGHT -> board[i][boardSize - 1 - j] = newList[j];
                     case UP -> board[j][i] = newList[j];
-                    case DOWN -> board[BOARD_SIZE - 1 - j][i] = newList[j];
+                    case DOWN -> board[boardSize - 1 - j][i] = newList[j];
                 }
             }
         }
@@ -197,8 +195,8 @@ public class GameState {
         return movesUsed;
     }
 
-    public boolean hasMovesRemaining(){
-        return movesUsed < movesLimit;
+    public boolean hasMovesRemaining() {
+        return movesUsed >= movesLimit;
     }
 
     public int getTileValue(Position position) {

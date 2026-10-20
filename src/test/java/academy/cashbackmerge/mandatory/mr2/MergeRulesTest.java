@@ -73,5 +73,4 @@ class MergeRulesTest {
             assertEquals(2, state.getScore());
         }
     }
-
 }

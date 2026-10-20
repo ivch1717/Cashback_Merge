@@ -1,4 +1,4 @@
-package academy.cashbackmerge;
+package academy.cashbackmerge.config;
 
 import java.math.BigDecimal;
 

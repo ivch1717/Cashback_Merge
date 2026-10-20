@@ -3,13 +3,13 @@ package academy.cashbackmerge.mandatory.mr2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import academy.cashbackmerge.CampaignConfig;
+import academy.cashbackmerge.config.CampaignConfig;
+import academy.cashbackmerge.config.RewardTier;
+import academy.cashbackmerge.config.SpawnRule;
 import academy.cashbackmerge.game.GameSession;
 import academy.cashbackmerge.game.GameState;
 import academy.cashbackmerge.game.Move;
 import academy.cashbackmerge.game.Position;
-import academy.cashbackmerge.RewardTier;
-import academy.cashbackmerge.SpawnRule;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

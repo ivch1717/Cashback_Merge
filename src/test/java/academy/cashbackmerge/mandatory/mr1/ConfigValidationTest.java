@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import academy.cashbackmerge.CampaignConfig;
 import academy.cashbackmerge.Load;
-import academy.cashbackmerge.RewardTier;
-import academy.cashbackmerge.SpawnRule;
+import academy.cashbackmerge.config.CampaignConfig;
+import academy.cashbackmerge.config.RewardTier;
+import academy.cashbackmerge.config.SpawnRule;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;

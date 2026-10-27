@@ -1,0 +1,35 @@
+{
+  "config" : {
+    "boardSize" : 4,
+    "movesLimit" : 100,
+    "spawnRules" : [ {
+      "cashback" : 1,
+      "probability" : 0.85
+    }, {
+      "cashback" : 2,
+      "probability" : 0.15
+    } ],
+    "rewardTable" : [ {
+      "cashback" : 2,
+      "reward" : 0
+    }, {
+      "cashback" : 4,
+      "reward" : 50
+    }, {
+      "cashback" : 8,
+      "reward" : 150
+    }, {
+      "cashback" : 16,
+      "reward" : 500
+    }, {
+      "cashback" : 32,
+      "reward" : 2000
+    } ],
+    "maxRewardCashback" : 32,
+    "maxRewardAllowedRate" : 0.20
+  },
+  "moves" : [ "UP", "UP", "UP", "UP", "UP", "LEFT", "UP", "LEFT", "UP", "DOWN", "LEFT", "UP", "DOWN", "UP", "LEFT", "UP", "UP", "LEFT", "DOWN", "UP", "LEFT", "UP", "LEFT", "UP", "UP", "UP", "UP", "UP", "UP", "DOWN", "UP", "UP", "LEFT", "LEFT", "UP", "UP", "UP", "DOWN", "LEFT", "UP", "LEFT", "UP", "LEFT", "DOWN", "LEFT", "UP", "UP", "UP", "LEFT", "UP", "LEFT", "UP", "DOWN", "UP", "UP", "UP", "LEFT", "LEFT", "UP", "UP", "DOWN", "LEFT", "UP", "LEFT", "LEFT", "UP", "UP", "LEFT", "UP", "UP", "LEFT", "UP", "UP", "UP", "UP", "UP", "DOWN", "LEFT", "UP", "UP", "UP", "DOWN", "UP", "UP", "LEFT", "UP", "UP", "UP", "DOWN", "LEFT", "UP", "UP", "LEFT", "UP", "LEFT", "UP", "DOWN", "LEFT", "UP", "LEFT" ],
+  "playerNumber" : 5,
+  "seed" : -6169532649852302182,
+  "strategy" : "GREEDY_SCORE"
+}
